@@ -162,7 +162,6 @@ src/
 ├── DatabaseHelper.java    All MySQL code (accounts, readings, and bills)
 ├── Main.java              The Swing GUI (run this file)
 ├── Tester.java            Console test program (optional)
-└── Payment.java           Payment class (not used by the GUI)
 ```
 
 ---
