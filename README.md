@@ -2,8 +2,9 @@
 
 A Java Swing desktop application that manages electricity accounts and computes monthly bills. Accounts are stored in a MySQL database, so they are still there the next time you open the program.
 
-**Author(s):** _[Your name / group members]_
-**Course / Section:** _[Course code and section]_
+_**Group C**_
+
+**Course / Section:** _BSIT2HG2_
 
 ---
 
@@ -325,4 +326,3 @@ Bill = **consumption** x **rate per kWh**, where consumption = current reading -
 - A saved bill keeps the amount computed on the day of the reading. If you later change an account from Residential to Commercial, the table recomputes its latest bill with the new rate, but the saved record is not changed.
 - A consumer cannot be turned into a public facility (or the other way around). Delete the account and add it again.
 - The database name, username, and password are written inside `DatabaseHelper.java`.
-- `Payment.java` is part of the project but is not used by the GUI.
