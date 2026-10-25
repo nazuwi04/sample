@@ -161,7 +161,6 @@ src/
 ├── MeterReading.java      Previous and current reading, and the consumption
 ├── DatabaseHelper.java    All MySQL code (accounts, readings, and bills)
 ├── Main.java              The Swing GUI (run this file)
-├── Tester.java            Console test program (optional)
 ```
 
 ---
