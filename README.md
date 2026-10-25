@@ -2,7 +2,8 @@
 
 A Java Swing desktop application that manages electricity accounts and computes monthly bills. Accounts are stored in a MySQL database, so they are still there the next time you open the program.
 
-**Group C** 
+**Group C**
+
 **Course / Section:** _BSIT2H-G2_
 
 ---
