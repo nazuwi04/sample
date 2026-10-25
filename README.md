@@ -2,9 +2,8 @@
 
 A Java Swing desktop application that manages electricity accounts and computes monthly bills. Accounts are stored in a MySQL database, so they are still there the next time you open the program.
 
-_**Group C**_
-
-**Course / Section:** _BSIT2HG2_
+**Author(s):** _[Your name / group members]_
+**Course / Section:** _[Course code and section]_
 
 ---
 
@@ -45,7 +44,7 @@ _**Group C**_
 | IntelliJ IDEA | Any recent version (Community is enough) | Editor and runner |
 | MySQL Server | 8.0 | Database |
 | MySQL Workbench | 8.0 | Create and view the database |
-| MySQL Connector/J | 8.x (Platform Independent ZIP) | Lets Java talk to MySQL |
+| MySQL Connector/J | 26.10.0 (Platform Independent ZIP) | Lets Java talk to MySQL |
 
 Tested on Windows.
 
@@ -106,11 +105,11 @@ CREATE TABLE meter_readings (
 );
 ```
 
+![SQL script that creates the tables](screenshots/02-create-tables-script.png)
+
 Each row of `meter_readings` belongs to either a consumer or a facility. When an account is deleted, its readings are deleted with it.
 
 Refresh **Schemas** on the left. You should see `consumers`, `public_facilities`, and `meter_readings` under `sample_db` > **Tables**.
-
-![Database tables in Workbench](screenshots/02-database-tables.png)
 
 ### Step 4: Get the project
 
@@ -284,6 +283,7 @@ Bill = **consumption** x **rate per kWh**, where consumption = current reading -
 ## 7. Input Validation
 
 - Names, addresses, facility names, and agencies **cannot be empty**.
+- A consumer name must be **2 to 50 characters** long.
 - Meter readings **cannot be negative**.
 - The current reading **cannot be lower** than the previous reading.
 - The reading date must be a real date in `YYYY-MM-DD` format, for example `2026-10-25`.
