@@ -304,7 +304,5 @@ Bill = **consumption** x **rate per kWh**, where consumption = current reading -
 
 ## 10. Known Limitations
 
-- **Meter readings and computed bills are not saved to MySQL.** They are kept in memory and are lost when the program closes. Accounts themselves are saved.
 - A consumer cannot be turned into a public facility (or the other way around). Delete the account and add it again.
 - The database name, username, and password are written inside `DatabaseHelper.java`.
-- `Payment.java` is part of the project but is not used by the GUI.
