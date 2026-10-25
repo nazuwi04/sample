@@ -2,9 +2,8 @@
 
 A Java Swing desktop application that manages electricity accounts and computes monthly bills. Accounts are stored in a MySQL database, so they are still there the next time you open the program.
 
-**Group C**
-
-**Course / Section:** _BSIT2H-G2_
+_**Group C**_
+**Course / Section:** _BSIT2HG2_
 
 ---
 
@@ -29,8 +28,8 @@ A Java Swing desktop application that manages electricity accounts and computes 
 |---|---|
 | **Consumers** | Add, update, and delete Residential and Commercial consumers |
 | **Public Facilities** | Add, update, and delete public facilities (for example, a barangay hall) |
-| **Billing** | Enter a meter reading for any account and compute its bill |
-| **Database** | All accounts are saved in MySQL and loaded automatically when the app starts |
+| **Billing** | Enter a meter reading for any account and compute its bill. Every reading and its total bill is saved in MySQL |
+| **Database** | Accounts, meter readings, and computed bills are saved in MySQL and loaded automatically when the app starts |
 | **Automatic IDs** | MySQL creates the ID, shown as `C-0001` for consumers and `PF-0001` for facilities |
 | **Duplicate protection** | The same name and address (or name and agency) cannot be saved twice |
 | **Validation** | Empty fields and invalid readings are rejected with a clear message |
@@ -92,9 +91,23 @@ CREATE TABLE public_facilities (
     agency VARCHAR(100) NOT NULL,
     CONSTRAINT uq_public_facilities UNIQUE (facility_name, agency)
 );
+
+CREATE TABLE meter_readings (
+    reading_id INT PRIMARY KEY AUTO_INCREMENT,
+    consumer_id INT NULL,
+    facility_id INT NULL,
+    previous_reading DECIMAL(10,2) NOT NULL,
+    current_reading DECIMAL(10,2) NOT NULL,
+    reading_date DATE NOT NULL,
+    total_bill DECIMAL(12,2) NOT NULL,
+    FOREIGN KEY (consumer_id) REFERENCES consumers(consumer_id) ON DELETE CASCADE,
+    FOREIGN KEY (facility_id) REFERENCES public_facilities(facility_id) ON DELETE CASCADE
+);
 ```
 
-Refresh **Schemas** on the left. You should see `consumers` and `public_facilities` under `sample_db` > **Tables**.
+Each row of `meter_readings` belongs to either a consumer or a facility. When an account is deleted, its readings are deleted with it.
+
+Refresh **Schemas** on the left. You should see `consumers`, `public_facilities`, and `meter_readings` under `sample_db` > **Tables**.
 
 ![Database tables in Workbench](screenshots/02-database-tables.png)
 
@@ -145,7 +158,7 @@ src/
 ├── Commercial.java        Consumer type with the commercial rate
 ├── PublicFacility.java    Government facility (billed with a discount)
 ├── MeterReading.java      Previous and current reading, and the consumption
-├── DatabaseHelper.java    All MySQL code (save, load, update, delete)
+├── DatabaseHelper.java    All MySQL code (accounts, readings, and bills)
 ├── Main.java              The Swing GUI (run this file)
 ├── Tester.java            Console test program (optional)
 └── Payment.java           Payment class (not used by the GUI)
@@ -226,6 +239,7 @@ Computes a bill from a meter reading. The table lists every account (consumers a
 3. Check the **Reading Date**. It starts as today's date. Use the format `YYYY-MM-DD`.
 4. Click **Compute Bill**.
 5. A window shows the account, the readings, the consumption, and the **Amount due**. The table row is also filled in with the readings and the total bill.
+6. The reading and the bill are saved in MySQL. Each time you compute a bill for the same account, a new record is added, and the table shows the **latest** one. When you reopen the program, the latest reading of each account is loaded back.
 
 ![Bill computed](screenshots/11-bill-computed.png)
 
@@ -271,7 +285,7 @@ Bill = **consumption** x **rate per kWh**, where consumption = current reading -
 - Names, addresses, facility names, and agencies **cannot be empty**.
 - Meter readings **cannot be negative**.
 - The current reading **cannot be lower** than the previous reading.
-- The reading date cannot be empty.
+- The reading date must be a real date in `YYYY-MM-DD` format, for example `2026-10-25`.
 - The same **name and address** cannot be saved twice for consumers.
 - The same **facility name and agency** cannot be saved twice for facilities.
 
@@ -287,6 +301,8 @@ Bill = **consumption** x **rate per kWh**, where consumption = current reading -
 | `Unknown database 'sample_db'` | Database was not created | Run the SQL in [Step 3](#step-3-create-the-database-and-tables) |
 | `Unknown column 'consumer_id'` or `'facility_id'` | Table has different column names | Compare with `DESCRIBE consumers;` and the SQL in Step 3 |
 | `Duplicate entry ... for key` | That account already exists | Use a different name or address |
+| `Table 'sample_db.meter_readings' doesn't exist` | The readings table was not created | Run the `CREATE TABLE meter_readings` part of Step 3 |
+| `Cannot truncate a table referenced in a foreign key constraint` | `meter_readings` points to the table | Use `DELETE FROM consumers;` instead of `TRUNCATE`, or clear `meter_readings` first |
 | "Could not load data" when the program starts | Database connection or table problem | Check the message, then fix using the rows above |
 
 ---
@@ -304,5 +320,8 @@ Bill = **consumption** x **rate per kWh**, where consumption = current reading -
 
 ## 10. Known Limitations
 
+- The Billing table shows only the **latest** reading of each account. Older readings stay in the `meter_readings` table, but the program has no screen for viewing the history.
+- A saved bill keeps the amount computed on the day of the reading. If you later change an account from Residential to Commercial, the table recomputes its latest bill with the new rate, but the saved record is not changed.
 - A consumer cannot be turned into a public facility (or the other way around). Delete the account and add it again.
 - The database name, username, and password are written inside `DatabaseHelper.java`.
+- `Payment.java` is part of the project but is not used by the GUI.
